@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pan-mgmt-config
+  namespace: kube-system
+data:
+  PAN_SERVICE_NAME: pan-mgmt-svc
+  PAN_MGMT_SECRET: pan-mgmt-secret
+
+  # Panorama settings
+  PAN_PANORAMA_IP: "10.0.3.101"
+  PAN_DEVICE_GROUP: "dg-k8"
+  PAN_TEMPLATE_STACK: "tmp-stack-k8-kservice"
+  PAN_CGNAME: "lcg-prhq"
+  PAN_CTNR_MODE_TYPE: "k8s-service"
+
+  # Non-mandatory parameters
+  # Recommended to have same name as the cluster name provided in Panorama Kubernetes plugin - helps with easier identification of pods if managing multiple clusters with same Panorama
+  CLUSTER_NAME: "k8clust-ridwapp"
+
+  # PAN_PANORAMA_IP2: ""
+
+  # Comment out to use CERTs otherwise PSK for IPSec between pan-mgmt and pan-ngfw
+  # IPSEC_CERT_BYPASS: ""         # No values needed
+
+  # Override auto-detect of jumbo-frame mode and force enable system-wide
+  # PAN_JUMBO_FRAME_ENABLED: "true"
+
+  # Start MGMT pod with GTP enabled. For complete functionality, need GTP
+  # enable at Panorama as well.
+  # PAN_GTP_ENABLED: "true"
+
+  # Start MGMT pod with GTP SW cut Through enable.
+  PAN_GTP_CUT_THRU: "false"
+
+  # Start MGMT pod with SW cut Through enable.
+  PAN_SW_CUT_THRU: "false"
+  # Enable high feature capacities. These need high memory for MGMT pod and
+  # higher/matching memory than specified below for NGFW pod.
+  # Refer to the system requirements documentation to see the max supported NGFW CPU size
+  # supported for each memory profile.
+  PAN_NGFW_MEMORY: "4Gi"
+  # PAN_NGFW_MEMORY: "6.5Gi"
+  # PAN_NGFW_MEMORY: "48Gi"
+  # PAN_NGFW_MEMORY: "56Gi"

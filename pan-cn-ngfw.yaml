@@ -1,0 +1,159 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pan-ngfw-dep
+  namespace: kube-system
+  labels:
+    app: pan-ngfw
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: pan-ngfw
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: pan-ngfw
+      annotations:
+        paloaltonetworks.com/firewall: pan-fw
+        paloaltonetworks.com/app: pan-fw
+        k8s.v1.cni.cncf.io/networks: pan-cni
+    spec:
+      priorityClassName: system-cluster-critical
+      terminationGracePeriodSeconds: 10
+      hostAliases:
+      - ip: "169.254.202.1"
+        hostnames:
+          - mgmt
+      affinity:
+       podAntiAffinity:
+         preferredDuringSchedulingIgnoredDuringExecution:
+         - weight: 100
+           podAffinityTerm:
+             labelSelector:
+               matchExpressions:
+                 - key: app
+                   operator: In
+                   values:
+                   - pan-ngfw
+             topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: pan-ngfw-container
+          image: janrik/panos_cn_ngfw:11.1.2-h3
+          command: ["/sbin/pan_start","newnns","nspan-fw","eac8617ee91"]
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/bash","-c","/sbin/pan_command pan_shutdown"]
+          readinessProbe:
+            exec:
+              command: ["/sbin/pan_ready_check"]
+            initialDelaySeconds: 15
+            periodSeconds: 2
+            failureThreshold: 1
+            successThreshold: 2
+          livenessProbe:
+            exec:
+              command: ["/sbin/pan_alive_check"]
+            initialDelaySeconds: 600
+            periodSeconds: 5
+            failureThreshold: 2
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            capabilities:
+              add: ["ALL"]
+          resources:
+            requests:
+              cpu: "1"
+              memory: "4Gi"
+            limits:
+              cpu: "1"
+              memory: "4Gi"
+          volumeMounts:
+          - mountPath: /opt/appinfo
+            name: appinfo
+          - mountPath: /opt/pan-cni-ready
+            name: pan-cni-ready
+          - mountPath: /dev/net/tun
+            name: devnettun
+            readOnly: false
+          - mountPath: /dev/shm
+            name: dshm
+          - mountPath: /etc/pan-fw-sw
+            name: sw-secret
+          - name: pancustomca
+            mountPath: /etc/custom-ca
+          envFrom:
+          - configMapRef:
+              name: pan-ngfw-config
+          env:
+            - name: CPU_REQUEST
+              valueFrom:
+                resourceFieldRef:
+                  containerName: pan-ngfw-container
+                  resource: requests.cpu
+            - name: CPU_LIMIT
+              valueFrom:
+                resourceFieldRef:
+                  containerName: pan-ngfw-container
+                  resource: limits.cpu
+            - name: MEMORY_REQUEST
+              valueFrom:
+                resourceFieldRef:
+                  containerName: pan-ngfw-container
+                  resource: requests.memory
+            - name: MEMORY_LIMIT
+              valueFrom:
+                resourceFieldRef:
+                  containerName: pan-ngfw-container
+                  resource: limits.memory
+            - name: MY_POD_UUID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: MY_POD_SERVICE_ACCOUNT
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.serviceAccountName
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+      volumes:
+      - name: devnettun
+        hostPath:
+          path: /dev/net/tun
+      - name: dshm
+        emptyDir:
+          medium: Memory
+      - name: appinfo
+        hostPath:
+          path: /var/log/pan-appinfo
+          type: Directory
+      - name: pan-cni-ready
+        hostPath:
+          path: /var/log/pan-appinfo/pan-cni-ready
+          type: Directory
+      - name: sw-secret
+        secret:
+          secretName: pan-fw-sw
+      - name: pancustomca
+        secret:
+          secretName: custom-ca-secret
+          optional: true

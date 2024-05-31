@@ -1,0 +1,77 @@
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: pan-cni
+  namespace: kube-system
+  labels:
+    k8s-app: pan-cni
+spec:
+  selector:
+    matchLabels:
+      k8s-app: pan-cni
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: pan-cni
+      annotations:
+        paloaltonetworks.com/app: pan-cni
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+    spec:
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+      hostNetwork: true
+      tolerations:
+        - effect: NoSchedule
+          operator: Exists
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - effect: NoExecute
+          operator: Exists
+      priorityClassName: system-node-critical
+      serviceAccountName: pan-cni-sa
+      terminationGracePeriodSeconds: 5
+      containers:
+        - name: install-pan-cni
+          image: janrik/pan_cni:3.0.4
+          imagePullPolicy: IfNotPresent
+          command: ["/install-pan-cni.sh", "main"]
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/install-pan-cni.sh", "cleanup"]
+          env:
+            - name: CNI_NETWORK_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: pan-cni-config
+                  key: cni_network_config
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          volumeMounts:
+            - mountPath: /host/opt/cni/bin
+              name: cni-bin-dir
+            - mountPath: /host/etc/cni/net.d
+              name: cni-net-dir
+            - mountPath: /host/appinfo
+              name: appinfo
+      volumes:
+        - name: cni-bin-dir
+          hostPath:
+            path: /opt/cni/bin
+        - name: cni-net-dir
+          hostPath:
+            path: /etc/cni/net.d
+        - name: appinfo
+          hostPath:
+            path: /var/log/pan-appinfo
+            type: DirectoryOrCreate
