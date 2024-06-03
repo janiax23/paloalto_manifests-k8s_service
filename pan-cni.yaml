@@ -19,10 +19,9 @@ spec:
         k8s-app: pan-cni
       annotations:
         paloaltonetworks.com/app: pan-cni
-        scheduler.alpha.kubernetes.io/critical-pod: ''
     spec:
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
       hostNetwork: true
       tolerations:
         - effect: NoSchedule

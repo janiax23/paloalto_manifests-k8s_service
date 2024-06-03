@@ -23,7 +23,7 @@ spec:
     matchLabels:
       appname: pan-mgmt-sts
   serviceName: pan-mgmt-svc
-  replicas: 1
+  replicas: 2
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: Parallel
