@@ -86,7 +86,7 @@ spec:
             value: pan-fw
       containers:
         - name: pan-mgmt
-          image: janrik/panos_cn_mgmt:11.1.2-h3
+          image: janrik/panos_cn_mgmt:11.2.0
           terminationMessagePolicy: FallbackToLogsOnError
           command: ["/sbin/pan_start"]
           lifecycle:
