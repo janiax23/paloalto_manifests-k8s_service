@@ -8,17 +8,17 @@ data:
   PAN_MGMT_SECRET: pan-mgmt-secret
 
   # Panorama settings
-  PAN_PANORAMA_IP: "10.0.3.101"
-  PAN_DEVICE_GROUP: "dg-k8"
+  PAN_PANORAMA_IP: "10.0.3.111"
+  PAN_DEVICE_GROUP: "dgroup-k8"
   PAN_TEMPLATE_STACK: "tmp-stack-k8-kservice"
-  PAN_CGNAME: "lcg-prhq"
+  PAN_CGNAME: "lcg-pank8"
   PAN_CTNR_MODE_TYPE: "k8s-service"
 
   # Non-mandatory parameters
   # Recommended to have same name as the cluster name provided in Panorama Kubernetes plugin - helps with easier identification of pods if managing multiple clusters with same Panorama
   CLUSTER_NAME: "k8clust-ridwapp"
 
-  # PAN_PANORAMA_IP2: ""
+  PAN_PANORAMA_IP2: "10.0.3.112"
 
   # Comment out to use CERTs otherwise PSK for IPSec between pan-mgmt and pan-ngfw
   # IPSEC_CERT_BYPASS: ""         # No values needed
