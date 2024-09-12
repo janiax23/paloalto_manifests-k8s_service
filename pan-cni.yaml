@@ -1,5 +1,5 @@
-kind: Deployment
 apiVersion: apps/v1
+kind: DaemonSet
 metadata:
   name: pan-cni
   namespace: kube-system
@@ -11,8 +11,6 @@ spec:
       k8s-app: pan-cni
   updateStrategy:
     type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
   template:
     metadata:
       labels:
