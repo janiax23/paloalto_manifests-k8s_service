@@ -9,7 +9,7 @@ data:
 
   # Panorama settings
   PAN_PANORAMA_IP: "10.1.80.111"
-  PAN_DEVICE_GROUP: "dgroup-k8"
+  PAN_DEVICE_GROUP: "dg-k8"
   PAN_TEMPLATE_STACK: "tmp-stack-k8-kservice"
   PAN_CGNAME: "cg-panorama"
   PAN_CTNR_MODE_TYPE: "k8s-service"
