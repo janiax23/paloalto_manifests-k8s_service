@@ -5,7 +5,7 @@ metadata:
 provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: WaitForFirstConsumer
 ---
-# Repeat the below yaml for each volumes.
+# Repeat the below yaml for each volume.
 kind: PersistentVolume
 apiVersion: v1
 metadata:
@@ -22,20 +22,15 @@ spec:
   accessModes:
     - ReadWriteOnce
   local:
-    # These directories path need to be created on the selected nodes, as below,
-    # with local volumes
     path: "/mnt/pan-local1"
   nodeAffinity:
     required:
       nodeSelectorTerms:
       - matchExpressions:
-        # replace these with actual hostnames or nodes labels where local
-        # volumes are avilable for MGMT pods. K8S wil schedule MGMT pods on
-        # these nodes only.
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - prhq-k8worker1
+          - k8worker1
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -53,20 +48,15 @@ spec:
   accessModes:
     - ReadWriteOnce
   local:
-    # These directories path need to be created on the selected nodes, as below,
-    # with local volumes
     path: "/mnt/pan-local1"
   nodeAffinity:
     required:
       nodeSelectorTerms:
       - matchExpressions:
-        # replace these with actual hostnames or nodes labels where local
-        # volumes are avilable for MGMT pods. K8S wil schedule MGMT pods on
-        # these nodes only.
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - prhq-k8worker2
+          - k8worker2
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -84,20 +74,15 @@ spec:
   accessModes:
     - ReadWriteOnce
   local:
-    # These directories path need to be created on the selected nodes, as below,
-    # with local volumes
     path: "/mnt/pan-local2"
   nodeAffinity:
     required:
       nodeSelectorTerms:
       - matchExpressions:
-        # replace these with actual hostnames or nodes labels where local
-        # volumes are avilable for MGMT pods. K8S wil schedule MGMT pods on
-        # these nodes only.
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - prhq-k8worker1
+          - k8worker1
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -115,20 +100,15 @@ spec:
   accessModes:
     - ReadWriteOnce
   local:
-    # These directories path need to be created on the selected nodes, as below,
-    # with local volumes
     path: "/mnt/pan-local2"
   nodeAffinity:
     required:
       nodeSelectorTerms:
       - matchExpressions:
-        # replace these with actual hostnames or nodes labels where local
-        # volumes are avilable for MGMT pods. K8S wil schedule MGMT pods on
-        # these nodes only.
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - prhq-k8worker2
+          - k8worker2
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -146,20 +126,15 @@ spec:
   accessModes:
     - ReadWriteOnce
   local:
-    # These directories path need to be created on the selected nodes, as below,
-    # with local volumes
     path: "/mnt/pan-local3"
   nodeAffinity:
     required:
       nodeSelectorTerms:
       - matchExpressions:
-        # replace these with actual hostnames or nodes labels where local
-        # volumes are avilable for MGMT pods. K8S wil schedule MGMT pods on
-        # these nodes only.
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - prhq-k8worker1
+          - k8worker1
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -177,20 +152,15 @@ spec:
   accessModes:
     - ReadWriteOnce
   local:
-    # These directories path need to be created on the selected nodes, as below,
-    # with local volumes
     path: "/mnt/pan-local3"
   nodeAffinity:
     required:
       nodeSelectorTerms:
       - matchExpressions:
-        # replace these with actual hostnames or nodes labels where local
-        # volumes are avilable for MGMT pods. K8S wil schedule MGMT pods on
-        # these nodes only.
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - prhq-k8worker2
+          - k8worker2
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -208,20 +178,15 @@ spec:
   accessModes:
     - ReadWriteOnce
   local:
-    # These directories path need to be created on the selected nodes, as below,
-    # with local volumes
     path: "/mnt/pan-local4"
   nodeAffinity:
     required:
       nodeSelectorTerms:
       - matchExpressions:
-        # replace these with actual hostnames or nodes labels where local
-        # volumes are avilable for MGMT pods. K8S wil schedule MGMT pods on
-        # these nodes only.
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - prhq-k8worker1
+          - k8worker1
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -239,20 +204,15 @@ spec:
   accessModes:
     - ReadWriteOnce
   local:
-    # These directories path need to be created on the selected nodes, as below,
-    # with local volumes
     path: "/mnt/pan-local4"
   nodeAffinity:
     required:
       nodeSelectorTerms:
       - matchExpressions:
-        # replace these with actual hostnames or nodes labels where local
-        # volumes are avilable for MGMT pods. K8S wil schedule MGMT pods on
-        # these nodes only.
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - prhq-k8worker2
+          - k8worker2
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -270,20 +230,15 @@ spec:
   accessModes:
     - ReadWriteOnce
   local:
-    # These directories path need to be created on the selected nodes, as below,
-    # with local volumes
     path: "/mnt/pan-local5"
   nodeAffinity:
     required:
       nodeSelectorTerms:
       - matchExpressions:
-        # replace these with actual hostnames or nodes labels where local
-        # volumes are avilable for MGMT pods. K8S wil schedule MGMT pods on
-        # these nodes only.
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - prhq-k8worker1
+          - k8worker1
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -301,20 +256,15 @@ spec:
   accessModes:
     - ReadWriteOnce
   local:
-    # These directories path need to be created on the selected nodes, as below,
-    # with local volumes
     path: "/mnt/pan-local5"
   nodeAffinity:
     required:
       nodeSelectorTerms:
       - matchExpressions:
-        # replace these with actual hostnames or nodes labels where local
-        # volumes are avilable for MGMT pods. K8S wil schedule MGMT pods on
-        # these nodes only.
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - prhq-k8worker2
+          - k8worker2
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -332,20 +282,15 @@ spec:
   accessModes:
     - ReadWriteOnce
   local:
-    # These directories path need to be created on the selected nodes, as below,
-    # with local volumes
     path: "/mnt/pan-local6"
   nodeAffinity:
     required:
       nodeSelectorTerms:
       - matchExpressions:
-        # replace these with actual hostnames or nodes labels where local
-        # volumes are avilable for MGMT pods. K8S wil schedule MGMT pods on
-        # these nodes only.
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - prhq-k8worker1
+          - k8worker1
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -363,17 +308,12 @@ spec:
   accessModes:
     - ReadWriteOnce
   local:
-    # These directories path need to be created on the selected nodes, as below,
-    # with local volumes
     path: "/mnt/pan-local6"
   nodeAffinity:
     required:
       nodeSelectorTerms:
       - matchExpressions:
-        # replace these with actual hostnames or nodes labels where local
-        # volumes are avilable for MGMT pods. K8S wil schedule MGMT pods on
-        # these nodes only.
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - prhq-k8worker2
+          - k8worker2
