@@ -40,8 +40,10 @@ spec:
       priorityClassName: system-node-critical
       affinity:
        podAntiAffinity:
-         requiredDuringSchedulingIgnoredDuringExecution:
-           - labelSelector:
+         preferredDuringSchedulingIgnoredDuringExecution:
+         - weight: 50  # Reduced the weight to make it more flexible
+           podAffinityTerm:
+             labelSelector:
                matchExpressions:
                  - key: "appname"
                    operator: In
