@@ -1,44 +1,66 @@
 #!/bin/bash
 
+##############################################################################
+#            Applying the Manifest Files in a Correct Order
+##############################################################################
+
 # Directory where the manifest files are stored
 MANIFEST_DIR="./"
 
+# Function to apply a manifest file with echo output
+apply_manifest() {
+    echo "Applying $1..."
+    kubectl apply -f "$MANIFEST_DIR/$1"
+    echo "------------------------------------------------------------"
+}
+
 # Apply CRDs first
-echo "Applying Custom Resource Definitions (CRDs)..."
-kubectl apply -f "$MANIFEST_DIR/pan-cn-mgmt-slot-crd.yaml"
-kubectl apply -f "$MANIFEST_DIR/pan-cn-ngfw-port-crd.yaml"
-
-# Apply ConfigMaps
-echo "Applying ConfigMaps..."
-kubectl apply -f "$MANIFEST_DIR/pan-cn-mgmt-configmap.yaml"
-kubectl apply -f "$MANIFEST_DIR/pan-cn-ngfw-configmap.yaml"
-kubectl apply -f "$MANIFEST_DIR/pan-cni-configmap.yaml"
-
-# Apply Secrets
-echo "Applying Secrets..."
-kubectl apply -f "$MANIFEST_DIR/pan-cn-mgmt-secret.yaml"
+echo "---------------------------------------------"
+echo "Apply the Custom Resource Definitions (CRDs):"
+echo "---------------------------------------------"
+apply_manifest "pan-cn-mgmt-slot-crd.yaml"
+apply_manifest "pan-cn-ngfw-port-crd.yaml"
+echo "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
 
 # Apply Persistent Volumes
-echo "Applying Persistent Volumes..."
-kubectl apply -f "$MANIFEST_DIR/pan-cn-pv-local.yaml"
+echo "-----------------------------"
+echo "Apply the Persistent Volumes:"
+echo "-----------------------------"
+apply_manifest "pan-cn-pv-local.yaml"
+echo "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
 
-# Apply Management Components
-echo "Applying Management Components..."
-kubectl apply -f "$MANIFEST_DIR/pan-cn-mgmt.yaml"
+# Apply ConfigMaps and Secrets
+echo "---------------------------------"
+echo "Apply the ConfigMaps and Secrets:"
+echo "---------------------------------"
+apply_manifest "pan-cn-ngfw-configmap.yaml"
+apply_manifest "pan-cn-mgmt-configmap.yaml"
+apply_manifest "pan-cni-configmap.yaml"
+apply_manifest "pan-cn-mgmt-secret.yaml"
+echo "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
 
-# Apply NGFW Components
-echo "Applying NGFW Components..."
-kubectl apply -f "$MANIFEST_DIR/pan-cn-ngfw.yaml"
+# Apply StatefulSet and Deployments
+echo "--------------------------------------"
+echo "Apply the StatefulSet and Deployments:"
+echo "--------------------------------------"
+apply_manifest "pan-cn-mgmt.yaml"
+apply_manifest "pan-cn-ngfw.yaml"
+echo "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
 
-# Apply Slot and Port Configuration (Custom Resources)
-echo "Applying Slot and Port Custom Resources..."
-kubectl apply -f "$MANIFEST_DIR/pan-cn-mgmt-slot-cr.yaml"
-kubectl apply -f "$MANIFEST_DIR/pan-cn-ngfw-port-cr.yaml"
+# Apply the CNI DaemonSet
+echo "------------------------"
+echo "Apply the CNI DaemonSet:"
+echo "------------------------"
+apply_manifest "pan-cni.yaml"
+echo "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
 
-# Apply CNI Plugin
-echo "Applying CNI Plugin..."
-kubectl apply -f "$MANIFEST_DIR/pan-cni.yaml"
+# Apply Services and Custom Resources
+echo "----------------------------------------"
+echo "Apply the Services and Custom Resources:"
+echo "----------------------------------------"
+apply_manifest "pan-cn-ngfw-svc.yaml"
+apply_manifest "pan-cn-mgmt-slot-cr.yaml"
+apply_manifest "pan-cn-ngfw-port-cr.yaml"
+echo "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"
 
-# Apply Service to expose NGFW
-echo "Applying Service..."
-kubectl apply -f "$MANIFEST_DIR/pan-cn-ngfw-svc.yaml"
+echo "All manifest files applied successfully!"
